@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Scissors } from 'lucide-react';
+import logo from '/img/logos.png';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -52,7 +53,7 @@ const Navbar: React.FC = () => {
             className="flex items-center space-x-2 text-white"
             onClick={closeMenu}
           >
-            <img src="/img/logos.png" alt="logo" className='w-10'/>
+            <img src={logo} className='h-10' />
             <span className="text-xl font-serif tracking-wider">AYLIVA</span>
           </Link>
 
