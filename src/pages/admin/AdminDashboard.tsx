@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { LayoutDashboard, Calendar, ImagePlus, FileEdit, Code, Zap } from 'lucide-react';
+import { Calendar, ImagePlus, FileEdit, Sparkles } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { Link } from 'react-router-dom';
 
@@ -39,17 +39,17 @@ export const AdminDashboard: React.FC = () => {
 
   const fetchDashboardData = async () => {
     try {
-      // Fetch counts
+      // Fetch counts (head request returns the exact row count without rows)
       const [appointmentsData, galleryData, blogData] = await Promise.all([
-        supabase.from('appointments').select('count').single(),
-        supabase.from('gallery').select('count').single(),
-        supabase.from('blog_posts').select('count').single()
+        supabase.from('appointments').select('*', { count: 'exact', head: true }),
+        supabase.from('gallery').select('*', { count: 'exact', head: true }),
+        supabase.from('blog_posts').select('*', { count: 'exact', head: true })
       ]);
 
       setStats({
-        appointments: appointmentsData.data?.count || 0,
-        gallery: galleryData.data?.count || 0,
-        blogPosts: blogData.data?.count || 0
+        appointments: appointmentsData.count || 0,
+        gallery: galleryData.count || 0,
+        blogPosts: blogData.count || 0
       });
 
       // Fetch recent appointments
@@ -110,24 +110,24 @@ export const AdminDashboard: React.FC = () => {
   if (loading) {
     return (
       <div className="p-6">
-        <div className="text-center">Loading...</div>
+        <div className="text-center text-gray-500">Yükleniyor...</div>
       </div>
     );
   }
 
   const statCards = [
     { 
-      label: 'Toplam Randevu', 
-      value: stats.appointments, 
-      icon: Calendar, 
-      color: 'bg-blue-500',
+      label: 'Toplam Randevu',
+      value: stats.appointments,
+      icon: Calendar,
+      color: 'bg-rose-500',
       link: '/admin/appointments'
     },
     { 
-      label: 'Galeri Öğeleri', 
-      value: stats.gallery, 
-      icon: ImagePlus, 
-      color: 'bg-purple-500',
+      label: 'Galeri Öğeleri',
+      value: stats.gallery,
+      icon: ImagePlus,
+      color: 'bg-amber-500',
       link: '/admin/gallery'
     },
     { 
@@ -143,12 +143,9 @@ export const AdminDashboard: React.FC = () => {
     <div className="p-6">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-          <div className="relative">
-            <Code size={28} className="text-purple-600" />
-            <Zap size={14} className="absolute -top-1 -right-1 text-purple-600" />
-          </div>
-          <span>Webuxe</span>
-          <span className="text-gray-400 ml-2">Yönetim Paneli</span>
+          <Sparkles size={28} className="text-red-600" />
+          <span className="font-display">Ayliva</span>
+          <span className="text-gray-400 ml-2 font-normal text-2xl">Yönetim Paneli</span>
         </h1>
         <p className="text-gray-600 mt-2">Hoş geldiniz! İşte güncel istatistikler ve son aktiviteler.</p>
       </div>
@@ -175,7 +172,7 @@ export const AdminDashboard: React.FC = () => {
             <h2 className="text-xl font-semibold text-gray-900">Son Randevular</h2>
             <Link 
               to="/admin/appointments"
-              className="text-purple-600 hover:text-purple-700 text-sm font-medium"
+              className="text-red-600 hover:text-red-700 text-sm font-medium"
             >
               Tümünü Gör
             </Link>
@@ -207,7 +204,7 @@ export const AdminDashboard: React.FC = () => {
             <h2 className="text-xl font-semibold text-gray-900">Son Blog Yazıları</h2>
             <Link 
               to="/admin/blog"
-              className="text-purple-600 hover:text-purple-700 text-sm font-medium"
+              className="text-red-600 hover:text-red-700 text-sm font-medium"
             >
               Tümünü Gör
             </Link>
@@ -226,7 +223,7 @@ export const AdminDashboard: React.FC = () => {
                   </div>
                   <Link 
                     to={`/admin/blog`}
-                    className="text-sm text-purple-600 hover:text-purple-700"
+                    className="text-sm text-red-600 hover:text-red-700"
                   >
                     Düzenle
                   </Link>

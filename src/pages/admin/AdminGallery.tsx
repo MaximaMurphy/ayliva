@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Trash2, Upload, Plus, X } from 'lucide-react';
+import { Trash2, Plus, X } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { supabase } from '../../lib/supabase';
+import { ImageUpload } from '../../components/admin/ImageUpload';
 
 interface GalleryItem {
   id: string;
@@ -44,7 +46,7 @@ export const AdminGallery: React.FC = () => {
       setError(null);
     } catch (error) {
       console.error('Error fetching gallery items:', error);
-      setError('Failed to fetch gallery items');
+      setError('Galeri öğeleri yüklenirken bir hata oluştu.');
     } finally {
       setLoading(false);
     }
@@ -62,9 +64,11 @@ export const AdminGallery: React.FC = () => {
       if (error) throw error;
       await fetchGalleryItems();
       setError(null);
+      toast.success('Görsel silindi.');
     } catch (error) {
       console.error('Error deleting image:', error);
-      setError('Failed to delete image');
+      setError('Görsel silinirken bir hata oluştu.');
+      toast.error('Görsel silinirken bir hata oluştu.');
     }
   };
 
@@ -94,9 +98,11 @@ export const AdminGallery: React.FC = () => {
       });
       setError(null);
       await fetchGalleryItems();
+      toast.success('Görsel başarıyla eklendi.');
     } catch (error) {
       console.error('Error adding image:', error);
-      setError('Failed to add image. Please make sure you have admin privileges.');
+      setError('Görsel eklenirken bir hata oluştu. Yönetici yetkiniz olduğundan emin olun.');
+      toast.error('Görsel eklenirken bir hata oluştu.');
     }
   };
 
@@ -112,14 +118,15 @@ export const AdminGallery: React.FC = () => {
       setError(null);
     } catch (error) {
       console.error('Error updating image:', error);
-      setError('Failed to update image status');
+      setError('Görsel durumu güncellenirken bir hata oluştu.');
+      toast.error('Görsel durumu güncellenirken bir hata oluştu.');
     }
   };
 
   if (loading) {
     return (
       <div className="p-6">
-        <div className="text-center">Loading...</div>
+        <div className="text-center text-gray-500">Yükleniyor...</div>
       </div>
     );
   }
@@ -143,6 +150,11 @@ export const AdminGallery: React.FC = () => {
         </div>
       )}
 
+      {images.length === 0 ? (
+        <div className="bg-white rounded-sm shadow-md p-12 text-center text-gray-500">
+          Henüz görsel eklenmemiş. Sağ üstteki “Yeni Görsel Ekle” ile başlayın.
+        </div>
+      ) : (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {images.map((image) => (
           <div key={image.id} className="bg-white rounded-sm shadow-md overflow-hidden">
@@ -182,6 +194,7 @@ export const AdminGallery: React.FC = () => {
           </div>
         ))}
       </div>
+      )}
 
       {/* Add Image Modal */}
       {showAddModal && (
@@ -212,18 +225,13 @@ export const AdminGallery: React.FC = () => {
                   />
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Görsel URL
-                  </label>
-                  <input
-                    type="url"
-                    value={newImage.image_url}
-                    onChange={(e) => setNewImage({ ...newImage, image_url: e.target.value })}
-                    className="w-full p-2 border border-gray-300 rounded-sm"
-                    required
-                  />
-                </div>
+                <ImageUpload
+                  label="Görsel"
+                  required
+                  folder="gallery"
+                  value={newImage.image_url}
+                  onChange={(url) => setNewImage({ ...newImage, image_url: url })}
+                />
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">

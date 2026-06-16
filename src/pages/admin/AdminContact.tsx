@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Save } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { supabase } from '../../lib/supabase';
 
 interface ContactInfo {
@@ -49,7 +50,8 @@ export const AdminContact: React.FC = () => {
       const { data, error } = await supabase
         .from('contact_info')
         .select('*')
-        .single();
+        .limit(1)
+        .maybeSingle();
 
       if (error) throw error;
       if (data) {
@@ -69,18 +71,24 @@ export const AdminContact: React.FC = () => {
     setError(null);
 
     try {
+      // Yeni kayıtta boş id göndermeyelim; veritabanı kendi üretsin.
+      const payload: Record<string, unknown> = {
+        ...formData,
+        updated_at: new Date().toISOString()
+      };
+      if (!payload.id) delete payload.id;
+
       const { error } = await supabase
         .from('contact_info')
-        .upsert({
-          ...formData,
-          updated_at: new Date().toISOString()
-        });
+        .upsert(payload);
 
       if (error) throw error;
-      alert('İletişim bilgileri başarıyla güncellendi.');
+      toast.success('İletişim bilgileri başarıyla güncellendi.');
+      await fetchContactInfo();
     } catch (error) {
       console.error('Error saving contact info:', error);
       setError('İletişim bilgileri kaydedilirken bir hata oluştu.');
+      toast.error('İletişim bilgileri kaydedilirken bir hata oluştu.');
     } finally {
       setSaving(false);
     }
@@ -89,7 +97,7 @@ export const AdminContact: React.FC = () => {
   if (loading) {
     return (
       <div className="p-6">
-        <div className="text-center">Loading...</div>
+        <div className="text-center text-gray-500">Yükleniyor...</div>
       </div>
     );
   }
@@ -280,7 +288,7 @@ export const AdminContact: React.FC = () => {
             <button
               type="submit"
               disabled={saving}
-              className="bg-purple-600 text-white px-6 py-2 rounded-sm hover:bg-purple-700 transition-colors duration-300 flex items-center"
+              className="bg-red-600 text-white px-6 py-2 rounded-sm hover:bg-red-700 transition-colors duration-300 flex items-center disabled:opacity-60"
             >
               <Save size={20} className="mr-2" />
               {saving ? 'Kaydediliyor...' : 'Kaydet'}

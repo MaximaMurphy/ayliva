@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import { Code, Zap, Eye, EyeOff } from 'lucide-react';
+import { Sparkles, Eye, EyeOff } from 'lucide-react';
 
 export const AdminLogin: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -9,23 +9,17 @@ export const AdminLogin: React.FC = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-
-    // Check for special code
-    if (password === 'webuxesuperadmin') {
-      const success = await login('aylivaadmin@gmail.com', 'admin321', rememberMe);
-      if (success) {
-        navigate('/admin');
-        return;
-      }
-    }
+    setLoading(true);
 
     const success = await login(email, password, rememberMe);
+    setLoading(false);
     if (success) {
       navigate('/admin');
     } else {
@@ -38,17 +32,14 @@ export const AdminLogin: React.FC = () => {
       <div className="bg-white p-8 rounded-sm shadow-lg w-full max-w-md">
         <div className="text-center mb-8">
           <Link to="/" className="flex items-center justify-center space-x-2">
-            <div className="relative">
-              <Code size={28} className="text-purple-600" />
-              <Zap size={14} className="absolute -top-1 -right-1 text-purple-600" />
-            </div>
-            <span className="text-xl font-display font-bold text-black">Webuxe</span>
+            <Sparkles size={28} className="text-red-600" />
+            <span className="text-2xl font-display font-bold text-black">Ayliva</span>
           </Link>
-          <p className="text-gray-600">Yönetim Paneli</p>
+          <p className="text-gray-600 mt-1">Yönetim Paneli</p>
         </div>
 
         {error && (
-          <div className="bg-purple-50 text-purple-600 p-3 rounded-sm mb-4">
+          <div className="bg-red-50 text-red-700 border border-red-200 p-3 rounded-sm mb-4">
             {error}
           </div>
         )}
@@ -63,7 +54,7 @@ export const AdminLogin: React.FC = () => {
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-purple-600"
+              className="w-full p-3 border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-red-600"
               required
             />
           </div>
@@ -78,7 +69,7 @@ export const AdminLogin: React.FC = () => {
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-purple-600"
+                className="w-full p-3 border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-red-600"
                 required
               />
               <button
@@ -97,7 +88,7 @@ export const AdminLogin: React.FC = () => {
                 type="checkbox"
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
-                className="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+                className="rounded border-gray-300 text-red-600 focus:ring-red-500"
               />
               <span className="ml-2 text-sm text-gray-600">Beni hatırla</span>
             </label>
@@ -105,9 +96,10 @@ export const AdminLogin: React.FC = () => {
 
           <button
             type="submit"
-            className="w-full bg-purple-600 text-white py-3 rounded-sm hover:bg-purple-700 transition-colors duration-300"
+            disabled={loading}
+            className="w-full bg-red-600 text-white py-3 rounded-sm hover:bg-red-700 transition-colors duration-300 disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            Giriş Yap
+            {loading ? 'Giriş yapılıyor...' : 'Giriş Yap'}
           </button>
         </form>
       </div>

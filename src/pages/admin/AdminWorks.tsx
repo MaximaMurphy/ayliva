@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, X, Pencil, Trash2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { supabase } from '../../lib/supabase';
+import { ImageUpload } from '../../components/admin/ImageUpload';
 
 interface Work {
   id: string;
@@ -59,7 +61,7 @@ export const AdminWorks: React.FC = () => {
           .eq('id', editingWork.id);
 
         if (error) throw error;
-        alert('Çalışma başarıyla güncellendi.');
+        toast.success('Çalışma başarıyla güncellendi.');
       } else {
         const { error } = await supabase
           .from('works')
@@ -69,7 +71,7 @@ export const AdminWorks: React.FC = () => {
           }]);
 
         if (error) throw error;
-        alert('Yeni çalışma başarıyla eklendi.');
+        toast.success('Yeni çalışma başarıyla eklendi.');
       }
 
       setShowModal(false);
@@ -83,7 +85,7 @@ export const AdminWorks: React.FC = () => {
       await fetchWorks();
     } catch (error) {
       console.error('Error saving work:', error);
-      alert('Bir hata oluştu. Lütfen tekrar deneyin.');
+      toast.error('Bir hata oluştu. Lütfen tekrar deneyin.');
     }
   };
 
@@ -109,10 +111,10 @@ export const AdminWorks: React.FC = () => {
 
       if (error) throw error;
       setWorks(prevWorks => prevWorks.filter(work => work.id !== id));
-      alert('Çalışma başarıyla silindi.');
+      toast.success('Çalışma başarıyla silindi.');
     } catch (error) {
       console.error('Error deleting work:', error);
-      alert('Çalışma silinirken bir hata oluştu.');
+      toast.error('Çalışma silinirken bir hata oluştu.');
     }
   };
 
@@ -131,14 +133,14 @@ export const AdminWorks: React.FC = () => {
       );
     } catch (error) {
       console.error('Error updating work status:', error);
-      alert('Durum güncellenirken bir hata oluştu.');
+      toast.error('Durum güncellenirken bir hata oluştu.');
     }
   };
 
   if (loading) {
     return (
       <div className="p-6">
-        <div className="text-center">Loading...</div>
+        <div className="text-center text-gray-500">Yükleniyor...</div>
       </div>
     );
   }
@@ -158,13 +160,18 @@ export const AdminWorks: React.FC = () => {
             });
             setShowModal(true);
           }}
-          className="inline-flex items-center bg-purple-600 text-white px-4 py-2 rounded-sm hover:bg-purple-700 transition-colors duration-300 text-sm"
+          className="inline-flex items-center bg-red-600 text-white px-4 py-2 rounded-sm hover:bg-red-700 transition-colors duration-300 text-sm"
         >
           <Plus size={16} className="mr-2" />
           Yeni Çalışma
         </button>
       </div>
 
+      {works.length === 0 ? (
+        <div className="bg-white rounded-sm shadow-md p-12 text-center text-gray-500">
+          Henüz çalışma eklenmemiş. Sağ üstteki “Yeni Çalışma” ile başlayın.
+        </div>
+      ) : (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {works.map((work) => (
           <div key={work.id} className="bg-white rounded-sm shadow-md overflow-hidden">
@@ -212,6 +219,7 @@ export const AdminWorks: React.FC = () => {
           </div>
         ))}
       </div>
+      )}
 
       {/* Add/Edit Work Modal */}
       {showModal && (
@@ -255,18 +263,13 @@ export const AdminWorks: React.FC = () => {
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Görsel URL <span className="text-red-600">*</span>
-                </label>
-                <input
-                  type="url"
-                  value={formData.image_url}
-                  onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                  className="w-full p-2 border border-gray-300 rounded-sm"
-                  required
-                />
-              </div>
+              <ImageUpload
+                label="Görsel"
+                required
+                folder="works"
+                value={formData.image_url}
+                onChange={(url) => setFormData({ ...formData, image_url: url })}
+              />
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -291,7 +294,7 @@ export const AdminWorks: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="bg-purple-600 text-white px-4 py-2 rounded-sm hover:bg-purple-700 transition-colors duration-300"
+                  className="bg-red-600 text-white px-4 py-2 rounded-sm hover:bg-red-700 transition-colors duration-300"
                 >
                   {editingWork ? 'Güncelle' : 'Kaydet'}
                 </button>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, X, Pencil, Trash2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { supabase } from '../../lib/supabase';
 
 interface Service {
@@ -75,7 +76,7 @@ export const AdminServices: React.FC = () => {
           )
         );
 
-        alert('Hizmet başarıyla güncellendi.');
+        toast.success('Hizmet başarıyla güncellendi.');
       } else {
         // Create new service
         const newService = {
@@ -96,7 +97,7 @@ export const AdminServices: React.FC = () => {
 
         // Update local state
         setServices(prevServices => [...prevServices, data]);
-        alert('Yeni hizmet başarıyla eklendi.');
+        toast.success('Yeni hizmet başarıyla eklendi.');
       }
 
       // Reset form and close modal
@@ -111,7 +112,7 @@ export const AdminServices: React.FC = () => {
       });
     } catch (error) {
       console.error('Error saving service:', error);
-      alert('Hizmet kaydedilirken bir hata oluştu. Lütfen tekrar deneyin.');
+      toast.error('Hizmet kaydedilirken bir hata oluştu. Lütfen tekrar deneyin.');
     }
   };
 
@@ -138,16 +139,16 @@ export const AdminServices: React.FC = () => {
 
       if (error) {
         console.error('Error deleting service:', error);
-        alert('Hizmet silinirken bir hata oluştu. Lütfen tekrar deneyin.');
+        toast.error('Hizmet silinirken bir hata oluştu. Lütfen tekrar deneyin.');
         return;
       }
 
       // Only update local state if deletion was successful
       setServices(prevServices => prevServices.filter(service => service.id !== id));
-      alert('Hizmet başarıyla silindi.');
+      toast.success('Hizmet başarıyla silindi.');
     } catch (error) {
       console.error('Error deleting service:', error);
-      alert('Hizmet silinirken bir hata oluştu. Lütfen tekrar deneyin.');
+      toast.error('Hizmet silinirken bir hata oluştu. Lütfen tekrar deneyin.');
     }
   };
 
@@ -169,17 +170,17 @@ export const AdminServices: React.FC = () => {
         )
       );
 
-      alert(`Hizmet ${data.active ? 'aktif' : 'pasif'} duruma getirildi.`);
+      toast.success(`Hizmet ${data.active ? 'aktif' : 'pasif'} duruma getirildi.`);
     } catch (error) {
       console.error('Error updating service:', error);
-      alert('Hizmet durumu güncellenirken bir hata oluştu. Lütfen tekrar deneyin.');
+      toast.error('Hizmet durumu güncellenirken bir hata oluştu. Lütfen tekrar deneyin.');
     }
   };
 
   if (loading) {
     return (
       <div className="p-6">
-        <div className="text-center">Loading...</div>
+        <div className="text-center text-gray-500">Yükleniyor...</div>
       </div>
     );
   }
@@ -200,7 +201,7 @@ export const AdminServices: React.FC = () => {
             });
             setShowModal(true);
           }}
-          className="bg-purple-600 text-white px-4 py-2 rounded-sm flex items-center hover:bg-purple-700 transition-colors duration-300"
+          className="bg-red-600 text-white px-4 py-2 rounded-sm flex items-center hover:bg-red-700 transition-colors duration-300"
         >
           <Plus size={20} className="mr-2" />
           Yeni Hizmet Ekle
@@ -234,6 +235,13 @@ export const AdminServices: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
+                {services.length === 0 && (
+                  <tr>
+                    <td colSpan={6} className="px-6 py-10 text-center text-gray-500">
+                      Henüz hizmet eklenmemiş.
+                    </td>
+                  </tr>
+                )}
                 {services.map((service) => (
                   <tr key={service.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4">
@@ -241,7 +249,7 @@ export const AdminServices: React.FC = () => {
                       <div className="text-sm text-gray-500">{service.description}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">
+                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
                         {service.category}
                       </span>
                     </td>
@@ -378,7 +386,7 @@ export const AdminServices: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="bg-purple-600 text-white px-4 py-2 rounded-sm hover:bg-purple-700 transition-colors duration-300"
+                  className="bg-red-600 text-white px-4 py-2 rounded-sm hover:bg-red-700 transition-colors duration-300"
                 >
                   {editingService ? 'Güncelle' : 'Kaydet'}
                 </button>

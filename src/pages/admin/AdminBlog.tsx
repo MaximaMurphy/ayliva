@@ -2,7 +2,9 @@ import React, { useState, useEffect, useCallback, memo } from 'react';
 import { PenSquare, Trash2, Plus, X, Search } from 'lucide-react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import toast from 'react-hot-toast';
 import { supabase } from '../../lib/supabase';
+import { ImageUpload } from '../../components/admin/ImageUpload';
 
 interface BlogPost {
   id: string;
@@ -192,22 +194,20 @@ const BlogForm = memo(({
         required
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <FormInput
-          label="Görsel URL"
-          value={formData.image_url}
-          onChange={(value) => onUpdateFormData('image_url', value)}
-          type="url"
-          required
-        />
+      <ImageUpload
+        label="Kapak Görseli"
+        required
+        folder="blog"
+        value={formData.image_url}
+        onChange={(value) => onUpdateFormData('image_url', value)}
+      />
 
-        <FormInput
-          label="Yazar"
-          value={formData.author}
-          onChange={(value) => onUpdateFormData('author', value)}
-          required
-        />
-      </div>
+      <FormInput
+        label="Yazar"
+        value={formData.author}
+        onChange={(value) => onUpdateFormData('author', value)}
+        required
+      />
 
       <FormInput
         label="Kategori"
@@ -282,10 +282,10 @@ export const AdminBlog: React.FC = () => {
       setShowAddModal(false);
       setFormData(initialFormData);
       fetchPosts();
-      alert('Blog yazısı başarıyla eklendi.');
+      toast.success('Blog yazısı başarıyla eklendi.');
     } catch (error) {
       console.error('Error adding post:', error);
-      alert('Blog yazısı eklenirken bir hata oluştu. Lütfen tekrar deneyin.');
+      toast.error('Blog yazısı eklenirken bir hata oluştu. Lütfen tekrar deneyin.');
     }
   };
 
@@ -321,10 +321,10 @@ export const AdminBlog: React.FC = () => {
       setCurrentPost(null);
       setFormData(initialFormData);
       fetchPosts();
-      alert('Blog yazısı başarıyla güncellendi.');
+      toast.success('Blog yazısı başarıyla güncellendi.');
     } catch (error) {
       console.error('Error updating post:', error);
-      alert('Blog yazısı güncellenirken bir hata oluştu. Lütfen tekrar deneyin.');
+      toast.error('Blog yazısı güncellenirken bir hata oluştu. Lütfen tekrar deneyin.');
     }
   };
 
@@ -339,15 +339,15 @@ export const AdminBlog: React.FC = () => {
 
       if (error) {
         console.error('Error deleting post:', error);
-        alert('Blog yazısı silinirken bir hata oluştu. Lütfen tekrar deneyin.');
+        toast.error('Blog yazısı silinirken bir hata oluştu. Lütfen tekrar deneyin.');
         return;
       }
 
       setPosts(prevPosts => prevPosts.filter(post => post.id !== id));
-      alert('Blog yazısı başarıyla silindi.');
+      toast.success('Blog yazısı başarıyla silindi.');
     } catch (error) {
       console.error('Error deleting post:', error);
-      alert('Blog yazısı silinirken bir hata oluştu. Lütfen tekrar deneyin.');
+      toast.error('Blog yazısı silinirken bir hata oluştu. Lütfen tekrar deneyin.');
     }
   };
 
@@ -362,7 +362,7 @@ export const AdminBlog: React.FC = () => {
       fetchPosts();
     } catch (error) {
       console.error('Error updating post:', error);
-      alert('Blog yazısı durumu güncellenirken bir hata oluştu. Lütfen tekrar deneyin.');
+      toast.error('Blog yazısı durumu güncellenirken bir hata oluştu. Lütfen tekrar deneyin.');
     }
   };
 
@@ -375,7 +375,7 @@ export const AdminBlog: React.FC = () => {
   if (loading) {
     return (
       <div className="p-6">
-        <div className="text-center">Loading...</div>
+        <div className="text-center text-gray-500">Yükleniyor...</div>
       </div>
     );
   }
@@ -434,6 +434,13 @@ export const AdminBlog: React.FC = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
+              {filteredPosts.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="px-6 py-10 text-center text-gray-500">
+                    {searchTerm ? 'Aramanızla eşleşen yazı bulunamadı.' : 'Henüz blog yazısı eklenmemiş.'}
+                  </td>
+                </tr>
+              )}
               {filteredPosts.map((post) => (
                 <tr key={post.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4">

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
+import toast from 'react-hot-toast';
 import { Check, X, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface Appointment {
@@ -36,7 +37,6 @@ export function AdminAppointments() {
 
       // Ensure data is not null before setting state
       setAppointments(data || []);
-      console.log('Fetched appointments:', data); // Debug log
     } catch (error) {
       console.error('Error fetching appointments:', error);
     } finally {
@@ -52,11 +52,13 @@ export function AdminAppointments() {
         .eq('id', id);
 
       if (error) throw error;
-      
+
       // Refresh appointments after update
       await fetchAppointments();
+      toast.success(status === 'approved' ? 'Randevu onaylandı.' : 'Randevu reddedildi.');
     } catch (error) {
       console.error('Error updating appointment status:', error);
+      toast.error('Randevu durumu güncellenirken bir hata oluştu.');
     }
   };
 

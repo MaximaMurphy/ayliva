@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Calendar, Image, FileText, LogOut, Scissors, Code, Zap, Briefcase, Phone, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Calendar, Image, FileText, LogOut, Scissors, Sparkles, Briefcase, Phone, Menu, X } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 
 interface AdminLayoutProps {
@@ -54,11 +54,8 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         </button>
         
         <Link to="/admin" className="flex items-center space-x-2">
-          <div className="relative">
-            <Code size={28} className="text-purple-600" />
-            <Zap size={14} className="absolute -top-1 -right-1 text-purple-600" />
-          </div>
-          <span className="text-xl font-display font-bold">Webuxe</span>
+          <Sparkles size={26} className="text-red-600" />
+          <span className="text-xl font-display font-bold">Ayliva</span>
         </Link>
 
         <div className="w-8" /> {/* Spacer for centering */}
@@ -88,11 +85,8 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         {/* Desktop Logo */}
         <div className="hidden lg:block p-4">
           <Link to="/admin" className="flex items-center space-x-2">
-            <div className="relative">
-              <Code size={28} className="text-purple-600" />
-              <Zap size={14} className="absolute -top-1 -right-1 text-purple-600" />
-            </div>
-            <span className="text-xl font-display font-bold">Webuxe</span>
+            <Sparkles size={26} className="text-red-600" />
+            <span className="text-xl font-display font-bold">Ayliva</span>
           </Link>
           <p className="text-sm text-gray-400">Yönetim Paneli</p>
         </div>
@@ -103,8 +97,10 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
               key={item.path}
               to={item.path}
               onClick={closeMobileMenu}
-              className={`flex items-center px-4 py-3 text-gray-300 hover:bg-black hover:text-purple-600 transition-colors duration-200 ${
-                location.pathname === item.path ? 'bg-black text-purple-600' : ''
+              className={`flex items-center px-4 py-3 border-l-4 transition-colors duration-200 ${
+                location.pathname === item.path
+                  ? 'bg-red-600/10 border-red-600 text-red-500'
+                  : 'border-transparent text-gray-300 hover:bg-gray-800 hover:text-white'
               }`}
             >
               <item.icon size={20} className="mr-3" />
@@ -115,7 +111,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         
         <button
           onClick={handleLogout}
-          className="w-full flex items-center px-4 py-3 text-gray-300 hover:bg-black hover:text-purple-600 transition-colors duration-200 mb-16"
+          className="w-full flex items-center px-4 py-3 border-l-4 border-transparent text-gray-300 hover:bg-gray-800 hover:text-white transition-colors duration-200 mb-16"
         >
           <LogOut size={20} className="mr-3" />
           Çıkış Yap
@@ -128,14 +124,14 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       </main>
 
       {/* Announcement Bar */}
-      <div className="fixed bottom-0 left-0 right-0 bg-purple-600 text-white py-2 px-4 text-center z-50">
-        <a 
-          href="https://webuxe.com" 
-          target="_blank" 
+      <div className="fixed bottom-0 left-0 right-0 bg-red-600 text-white py-2 px-4 text-center z-50">
+        <a
+          href="https://ayliva.com.tr"
+          target="_blank"
           rel="noopener noreferrer"
           className="hover:underline inline-flex items-center justify-center"
         >
-          Teknolojinin son noktası Webuxe.com iletişime geçmek için tıklayın
+          Ayliva Güzellik Merkezi — web sitenizi ziyaret edin
           <span className="ml-2">→</span>
         </a>
       </div>
@@ -152,7 +148,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       {showLogoutModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-sm p-6 w-full max-w-sm">
-            <h3 className="text-lg font-medium text-black-900 mb-4">
+            <h3 className="text-lg font-medium text-gray-900 mb-4">
               Oturumu Kapat
             </h3>
             <p className="text-gray-500 mb-6">
@@ -167,7 +163,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
               </button>
               <button
                 onClick={confirmLogout}
-                className="bg-purple-600 text-white px-4 py-2 rounded-sm hover:bg-purple-700 transition-colors duration-300"
+                className="bg-red-600 text-white px-4 py-2 rounded-sm hover:bg-red-700 transition-colors duration-300"
               >
                 Oturumu Kapat
               </button>
