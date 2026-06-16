@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { smoothScroll } from '../../utils/animations';
 
 const Hero: React.FC = () => {
+  const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
   
   const slides = [
@@ -63,8 +65,8 @@ const Hero: React.FC = () => {
                 >
                   Randevu Al
                 </button>
-                <button 
-                  onClick={() => smoothScroll('services')}
+                <button
+                  onClick={() => navigate('/services')}
                   className="border border-white text-white py-3 px-8 rounded-sm hover:bg-white hover:text-black transition-all duration-300 transform hover:translate-y-[-2px]"
                 >
                   Hizmetlerimiz

@@ -122,7 +122,7 @@ const Contact: React.FC = () => {
 
   if (loading) {
     return (
-      <section className="py-20 bg-white">
+      <section id="contact" className="py-20 bg-white">
         <div className="container mx-auto px-4 md:px-6">
           <div className="max-w-3xl mx-auto">
             <div className="animate-pulse space-y-4">
@@ -144,7 +144,7 @@ const Contact: React.FC = () => {
 
   if (!contactInfo) {
     return (
-      <section className="py-20 bg-white">
+      <section id="contact" className="py-20 bg-white">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center">
             <p className="text-red-600 mb-4">İletişim bilgileri yüklenirken bir hata oluştu.</p>
@@ -161,7 +161,7 @@ const Contact: React.FC = () => {
   }
 
   return (
-    <section className="py-20 bg-white">
+    <section id="contact" className="py-20 bg-white">
       <div className="container mx-auto px-4 md:px-6">
         <div className="max-w-3xl mx-auto text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-serif text-black mb-4">

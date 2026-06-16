@@ -1,7 +1,9 @@
 import React, { useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { observeElementInView } from '../../utils/animations';
 
 const About: React.FC = () => {
+  const navigate = useNavigate();
   const sectionRef = useRef<HTMLElement>(null);
   
   useEffect(() => {
@@ -61,11 +63,9 @@ const About: React.FC = () => {
               </div>
             </div>
             
-            <button 
+            <button
               className="bg-black text-white py-3 px-8 rounded-sm hover:bg-red-600 transition-colors duration-300"
-              onClick={() => {
-                document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-              }}
+              onClick={() => navigate('/contact')}
             >
               Bize Ulaşın
             </button>

@@ -1,5 +1,3 @@
-import React from 'react';
-
 // Smooth scrolling function
 export const smoothScroll = (id: string): void => {
   const element = document.getElementById(id);

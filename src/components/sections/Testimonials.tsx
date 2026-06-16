@@ -71,12 +71,10 @@ const Testimonials: React.FC = () => {
                 <div key={testimonial.id} className="w-full flex-shrink-0 px-4">
                   <div className="bg-white rounded-sm shadow-lg p-8 md:p-10">
                     <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-                      <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden flex-shrink-0">
-                        <img 
-                          src={testimonial.image} 
-                          alt={testimonial.name} 
-                          className="w-full h-full object-cover"
-                        />
+                      <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden flex-shrink-0 bg-red-600 flex items-center justify-center">
+                        <span className="text-white text-3xl md:text-4xl font-serif">
+                          {testimonial.name.charAt(0)}
+                        </span>
                       </div>
                       <div className="flex-1">
                         <div className="flex mb-4">
